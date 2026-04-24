@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Icon from "@mdi/react";
-import { mdiCoffee, mdiCup, mdiTrendingUp, mdiHandshake, mdiChevronLeft, mdiChevronRight } from "@mdi/js";
+import { mdiCoffee, mdiCup, mdiTrendingUp, mdiHandshake } from "@mdi/js";
 
 const REASONS = [
   {
@@ -117,28 +117,7 @@ export default function Why() {
             </motion.h2>
           </div>
 
-          {/* Buttons */}
-          <div className="flex items-center gap-3 shrink-0">
-            {[{ dir: -1 as const, icon: mdiChevronLeft, label: "Previous" }, { dir: 1 as const, icon: mdiChevronRight, label: "Next" }].map(({ dir, icon, label }) => (
-              <button
-                key={label}
-                onClick={() => handleNav(dir)}
-                aria-label={`${label} slide`}
-                className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
-                style={{ background: "#091810", border: "1px solid #1e3d28", color: "#f0eae5" }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "#0f2418";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#00aa5f";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = "#091810";
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#1e3d28";
-                }}
-              >
-                <Icon path={icon} size={1} aria-hidden="true" />
-              </button>
-            ))}
-          </div>
+          {/* no visible buttons — hidden zones on the stage instead */}
         </div>
 
         {/* ── 3-D coverflow stage ── */}
@@ -146,6 +125,20 @@ export default function Why() {
           className="relative mx-auto"
           style={{ height: 380 }}
         >
+          {/* Hidden click zones — left goes prev, right goes next */}
+          <button
+            onClick={() => handleNav(-1)}
+            aria-label="Previous slide"
+            className="absolute inset-y-0 left-0 z-50 w-1/3 cursor-w-resize focus-visible:outline-none"
+            style={{ background: "transparent" }}
+          />
+          <button
+            onClick={() => handleNav(1)}
+            aria-label="Next slide"
+            className="absolute inset-y-0 right-0 z-50 w-1/3 cursor-e-resize focus-visible:outline-none"
+            style={{ background: "transparent" }}
+          />
+
           {slots.map((offset) => {
             const idx = mod(current + offset, TOTAL);
             const item = REASONS[idx];
