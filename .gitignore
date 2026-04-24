@@ -1,0 +1,4 @@
+node_modules/
+.next/
+.standards-review/
+dev-out.txt
