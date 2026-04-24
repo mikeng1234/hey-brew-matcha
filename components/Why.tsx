@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, useAnimation } from "framer-motion";
+import { motion } from "framer-motion";
 import Icon from "@mdi/react";
 import { mdiCoffee, mdiCup, mdiTrendingUp, mdiHandshake, mdiChevronLeft, mdiChevronRight } from "@mdi/js";
 
@@ -41,78 +41,32 @@ const REASONS = [
 ];
 
 const TOTAL = REASONS.length;
-const GAP = 20; // px gap between cards
-
-// Build an extended array: [last, ...all, first] for seamless infinite loop
-// Real cards live at indices 1 … TOTAL in the extended array
-const EXTENDED = [REASONS[TOTAL - 1], ...REASONS, REASONS[0]];
 
 function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
 
+// Flat offset params for each slot — no tilt, no depth
+const SLOT_CONFIG: Record<number, { x: number; opacity: number; scale: number; zIndex: number }> = {
+  [-2]: { x: -300, opacity: 0.18, scale: 0.80, zIndex: 1 },
+  [-1]: { x: -165, opacity: 0.50, scale: 0.90, zIndex: 2 },
+  [0]:  { x: 0,    opacity: 1,    scale: 1,    zIndex: 10 },
+  [1]:  { x: 165,  opacity: 0.50, scale: 0.90, zIndex: 2 },
+  [2]:  { x: 300,  opacity: 0.18, scale: 0.80, zIndex: 1 },
+};
+
 export default function Why() {
-  // trackIndex = which EXTENDED card is in the "center" slot
-  // Starts at 1 so the first real card is centered
-  const [trackIndex, setTrackIndex] = useState(1);
-  const [transitioning, setTransitioning] = useState(false);
-  const controls = useAnimation();
-  const trackRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+  const [busy, setBusy] = useState(false);
   const autoRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // ── Compute how many px to translate the track ──────────────────────────
-  // We render EXTENDED.length cards. Center of viewport = center card (trackIndex).
-  // Offset so that card at `trackIndex` is centered:
-  // x = -(trackIndex * (cardW + GAP)) + (containerW/2 - cardW/2)
-  const getTranslate = useCallback((idx: number) => {
-    const container = containerRef.current;
-    if (!container) return 0;
-    const containerW = container.offsetWidth;
-    const cardW = (containerW - GAP * 2) / 3; // 3 cards visible
-    return -(idx * (cardW + GAP)) + (containerW / 2 - cardW / 2);
-  }, []);
+  const navigate = useCallback((dir: 1 | -1) => {
+    if (busy) return;
+    setBusy(true);
+    setCurrent(prev => mod(prev + dir, TOTAL));
+    setTimeout(() => setBusy(false), 520);
+  }, [busy]);
 
-  // ── Slide to a given trackIndex ──────────────────────────────────────────
-  const slideTo = useCallback(
-    async (idx: number, animate = true) => {
-      if (animate) {
-        setTransitioning(true);
-        await controls.start({
-          x: getTranslate(idx),
-          transition: { type: "tween", duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
-        });
-        setTransitioning(false);
-      } else {
-        controls.set({ x: getTranslate(idx) });
-      }
-    },
-    [controls, getTranslate]
-  );
-
-  // ── Navigate ─────────────────────────────────────────────────────────────
-  const navigate = useCallback(
-    async (dir: 1 | -1) => {
-      if (transitioning) return;
-      const next = trackIndex + dir;
-      setTrackIndex(next);
-      await slideTo(next, true);
-
-      // If we landed on a clone, silently jump to the real card
-      if (next <= 0) {
-        const real = TOTAL; // last real card
-        setTrackIndex(real);
-        slideTo(real, false);
-      } else if (next >= TOTAL + 1) {
-        const real = 1; // first real card
-        setTrackIndex(real);
-        slideTo(real, false);
-      }
-    },
-    [trackIndex, transitioning, slideTo]
-  );
-
-  // ── Auto-slide ───────────────────────────────────────────────────────────
   const resetAuto = useCallback(() => {
     if (autoRef.current) clearInterval(autoRef.current);
     autoRef.current = setInterval(() => navigate(1), 4000);
@@ -123,20 +77,13 @@ export default function Why() {
     return () => { if (autoRef.current) clearInterval(autoRef.current); };
   }, [resetAuto]);
 
-  // ── Initial position on mount + resize ──────────────────────────────────
-  useEffect(() => {
-    slideTo(trackIndex, false);
-    const handleResize = () => slideTo(trackIndex, false);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleNav = (dir: 1 | -1) => { navigate(dir); resetAuto(); };
 
-  // ── Which REASONS index is currently centered ─────────────────────────
-  const centerRealIndex = mod(trackIndex - 1, TOTAL);
+  // Slots we render: offsets -2 … +2 (5 cards total)
+  const slots = [-2, -1, 0, 1, 2];
 
   return (
-    <section id="why" className="py-28 overflow-hidden" style={{ background: "#030e07" }}>
+    <section id="why" className="py-28" style={{ background: "#030e07" }}>
       <div className="max-w-7xl mx-auto px-6">
 
         {/* Header */}
@@ -170,155 +117,146 @@ export default function Why() {
             </motion.h2>
           </div>
 
-          {/* Left / Right buttons */}
+          {/* Buttons */}
           <div className="flex items-center gap-3 shrink-0">
-            <button
-              onClick={() => { navigate(-1); resetAuto(); }}
-              aria-label="Previous slide"
-              className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
-              style={{ background: "#091810", border: "1px solid #1e3d28", color: "#f0eae5" }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#0f2418";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#00aa5f";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#091810";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#1e3d28";
-              }}
-            >
-              <Icon path={mdiChevronLeft} size={1} aria-hidden="true" />
-            </button>
-            <button
-              onClick={() => { navigate(1); resetAuto(); }}
-              aria-label="Next slide"
-              className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
-              style={{ background: "#091810", border: "1px solid #1e3d28", color: "#f0eae5" }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#0f2418";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#00aa5f";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = "#091810";
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "#1e3d28";
-              }}
-            >
-              <Icon path={mdiChevronRight} size={1} aria-hidden="true" />
-            </button>
+            {[{ dir: -1 as const, icon: mdiChevronLeft, label: "Previous" }, { dir: 1 as const, icon: mdiChevronRight, label: "Next" }].map(({ dir, icon, label }) => (
+              <button
+                key={label}
+                onClick={() => handleNav(dir)}
+                aria-label={`${label} slide`}
+                className="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
+                style={{ background: "#091810", border: "1px solid #1e3d28", color: "#f0eae5" }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "#0f2418";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#00aa5f";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = "#091810";
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = "#1e3d28";
+                }}
+              >
+                <Icon path={icon} size={1} aria-hidden="true" />
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Carousel track */}
-        <div ref={containerRef} className="relative overflow-visible">
-          <motion.div
-            ref={trackRef}
-            className="flex"
-            style={{ gap: GAP, willChange: "transform" }}
-            animate={controls}
-          >
-            {EXTENDED.map((item, i) => {
-              // Which real index does this extended slot correspond to?
-              const realIndex = mod(i - 1, TOTAL);
-              const isCenter = realIndex === centerRealIndex && i === trackIndex;
+        {/* ── 3-D coverflow stage ── */}
+        <div
+          className="relative mx-auto"
+          style={{ height: 380 }}
+        >
+          {slots.map((offset) => {
+            const idx = mod(current + offset, TOTAL);
+            const item = REASONS[idx];
+            const cfg = SLOT_CONFIG[offset];
 
-              return (
-                <motion.div
-                  key={i}
-                  className="flex flex-col p-6 shrink-0 cursor-default"
-                  style={{
-                    width: "calc((100vw - 48px - 40px) / 3)",
-                    maxWidth: 380,
-                    background: "#091810",
-                    border: "1px solid #142a1c",
-                    borderRadius: "20px",
-                  }}
-                  animate={{
-                    opacity: isCenter ? 1 : 0.35,
-                    scale: isCenter ? 1 : 0.97,
-                    borderColor: isCenter ? "rgba(0,170,95,0.35)" : "#142a1c",
-                  }}
-                  transition={{ duration: 0.4 }}
-                >
-                  {/* Tag */}
-                  <div className="flex items-start justify-between mb-5">
-                    {/* Icon */}
-                    <div
-                      className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
-                      style={{ background: "rgba(0,170,95,0.12)" }}
-                    >
-                      <Icon path={item.icon} size={0.9} color="#00aa5f" aria-hidden="true" />
-                    </div>
-                    <span
-                      className="text-xs px-3 py-1 font-semibold"
-                      style={{
-                        background: `${item.tagColor}18`,
-                        color: item.tagColor,
-                        borderRadius: "50px",
-                        border: `1px solid ${item.tagColor}40`,
-                        fontFamily: "var(--font-dm-sans)",
-                      }}
-                    >
-                      {item.tag}
-                    </span>
+            return (
+              <motion.div
+                key={`${current}-${offset}`}
+                className="absolute top-1/2 left-1/2 flex flex-col p-6 cursor-default select-none"
+                style={{
+                  width: 280,
+                  marginLeft: -140,   // half of width to center
+                  marginTop: -160,    // half of approx card height to center
+                  borderRadius: 20,
+                  background: "#091810",
+                  border: "1px solid #142a1c",
+                  zIndex: cfg.zIndex,
+                  pointerEvents: offset === 0 ? "auto" : "none",
+                }}
+                animate={{
+                  x: cfg.x,
+                  opacity: cfg.opacity,
+                  scale: cfg.scale,
+                  borderColor: offset === 0 ? "rgba(0,170,95,0.4)" : "#142a1c",
+                  boxShadow: offset === 0
+                    ? "0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,170,95,0.15)"
+                    : "0 8px 24px rgba(0,0,0,0.4)",
+                }}
+                transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                onClick={() => {
+                  if (offset !== 0) { handleNav(offset > 0 ? 1 : -1); }
+                }}
+              >
+                {/* Icon + tag row */}
+                <div className="flex items-start justify-between mb-5">
+                  <div
+                    className="w-11 h-11 rounded-full flex items-center justify-center shrink-0"
+                    style={{ background: "rgba(0,170,95,0.12)" }}
+                  >
+                    <Icon path={item.icon} size={0.9} color="#00aa5f" aria-hidden="true" />
                   </div>
-
-                  <p
-                    className="text-xs mb-1"
-                    style={{ color: "#506458", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--font-dm-sans)" }}
-                  >
-                    {item.category}
-                  </p>
-                  <h3
-                    className="text-base font-semibold mb-3"
-                    style={{ color: "#f0eae5", fontFamily: "var(--font-dm-sans)" }}
-                  >
-                    {item.name}
-                  </h3>
-                  <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "#8a9e8f" }}>
-                    {item.desc}
-                  </p>
-
-                  <a
-                    href="#inquire"
-                    className="text-xs px-4 py-2 font-semibold transition-all duration-200 active:scale-[0.92] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f] self-start"
+                  <span
+                    className="text-xs px-3 py-1 font-semibold"
                     style={{
-                      background: "rgba(0,170,95,0.1)",
-                      color: "#00aa5f",
+                      background: `${item.tagColor}18`,
+                      color: item.tagColor,
                       borderRadius: "50px",
-                      border: "1px solid rgba(0,170,95,0.25)",
+                      border: `1px solid ${item.tagColor}40`,
                       fontFamily: "var(--font-dm-sans)",
                     }}
-                    onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.2)"; }}
-                    onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.1)"; }}
                   >
-                    Learn More
-                  </a>
-                </motion.div>
-              );
-            })}
-          </motion.div>
+                    {item.tag}
+                  </span>
+                </div>
 
-          {/* Dot indicators */}
-          <div className="flex items-center justify-center gap-2 mt-8">
-            {REASONS.map((_, i) => (
-              <button
-                key={i}
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => {
-                  if (transitioning) return;
-                  const newTrack = i + 1;
-                  setTrackIndex(newTrack);
-                  slideTo(newTrack, true);
-                  resetAuto();
-                }}
-                className="transition-all duration-300 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
-                style={{
-                  width: i === centerRealIndex ? 24 : 8,
-                  height: 8,
-                  background: i === centerRealIndex ? "#00aa5f" : "#1e3d28",
-                }}
-              />
-            ))}
-          </div>
+                <p
+                  className="text-xs mb-1"
+                  style={{ color: "#506458", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "var(--font-dm-sans)" }}
+                >
+                  {item.category}
+                </p>
+                <h3
+                  className="text-base font-semibold mb-3"
+                  style={{ color: "#f0eae5", fontFamily: "var(--font-dm-sans)" }}
+                >
+                  {item.name}
+                </h3>
+                <p className="text-sm leading-relaxed flex-1 mb-6" style={{ color: "#8a9e8f" }}>
+                  {item.desc}
+                </p>
+
+                <a
+                  href="#inquire"
+                  className="text-xs px-4 py-2 font-semibold transition-all duration-200 active:scale-[0.92] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f] self-start"
+                  style={{
+                    background: "rgba(0,170,95,0.1)",
+                    color: "#00aa5f",
+                    borderRadius: "50px",
+                    border: "1px solid rgba(0,170,95,0.25)",
+                    fontFamily: "var(--font-dm-sans)",
+                    pointerEvents: offset === 0 ? "auto" : "none",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.2)"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.1)"; }}
+                >
+                  Learn More
+                </a>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex items-center justify-center gap-2 mt-10">
+          {REASONS.map((_, i) => (
+            <button
+              key={i}
+              aria-label={`Go to slide ${i + 1}`}
+              onClick={() => {
+                if (busy) return;
+                setCurrent(i);
+                resetAuto();
+              }}
+              className="transition-all duration-300 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
+              style={{
+                width: i === current ? 24 : 8,
+                height: 8,
+                background: i === current ? "#00aa5f" : "#1e3d28",
+              }}
+            />
+          ))}
         </div>
 
         {/* Bottom CTA */}
@@ -327,7 +265,7 @@ export default function Why() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5 }}
         >
           <a
             href="#inquire"
