@@ -5,17 +5,18 @@ import { motion } from "framer-motion";
 const BRANCH_COUNT = "50+";
 
 export default function Hero() {
+
   return (
     <section className="relative min-h-screen flex flex-col md:flex-row overflow-hidden">
 
       {/* ── LEFT PANEL — solid background, text pinned to bottom-left ── */}
       <div
-        className="relative flex flex-col justify-end px-10 pb-14 pt-32 md:pt-0 md:w-1/2 min-h-[55vh] md:min-h-screen"
+        className="relative z-10 flex flex-col justify-end px-10 pb-14 pt-32 md:pt-0 md:w-[38%] min-h-[55vh] md:min-h-screen"
         style={{ background: "#030e07" }}
       >
         {/* Eyebrow */}
         <motion.p
-          className="text-xs font-semibold tracking-[0.25em] uppercase mb-5"
+          className="text-xs md:text-sm font-semibold tracking-[0.25em] uppercase mb-5"
           style={{ color: "#00aa5f", fontFamily: "var(--font-dm-sans)" }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -28,7 +29,7 @@ export default function Hero() {
         <motion.h1
           className="font-normal leading-none mb-6"
           style={{
-            fontSize: "clamp(2.8rem, 6vw, 5.5rem)",
+            fontSize: "clamp(2.6rem, 5.5vw, 5.8rem)",
             color: "#f0eae5",
             letterSpacing: "-0.02em",
             fontFamily: "var(--font-dm-serif)",
@@ -37,14 +38,13 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.25 }}
         >
-          Hey Brew
-          <br />
+          Hey Brew{" "}
           <em style={{ color: "#d1de47", fontStyle: "italic" }}>Cafe PH.</em>
         </motion.h1>
 
         {/* Body copy */}
         <motion.p
-          className="text-sm leading-relaxed mb-8 max-w-sm"
+          className="text-sm md:text-base leading-relaxed mb-8 max-w-sm md:max-w-md"
           style={{ color: "#8a9e8f" }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -63,7 +63,7 @@ export default function Hero() {
         >
           <motion.a
             href="#inquire"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 text-sm font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d1de47]"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d1de47]"
             style={{ background: "#d1de47", color: "#030e07", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
             whileHover={{ y: -3, boxShadow: "0 8px 28px rgba(209,222,71,0.4)", transition: { duration: 0.2 } }}
             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#b8c83a"; }}
@@ -73,7 +73,7 @@ export default function Hero() {
           </motion.a>
           <motion.a
             href="#packages"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 text-sm font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
             style={{ border: "1px solid #1e3d28", color: "#8a9e8f", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
             whileHover={{ y: -3, transition: { duration: 0.2 } }}
             onMouseEnter={(e) => {
@@ -106,12 +106,12 @@ export default function Hero() {
           ].map((s) => (
             <div key={s.label}>
               <p
-                className="text-2xl font-normal"
+                className="text-2xl md:text-4xl font-normal"
                 style={{ color: "#d1de47", fontFamily: "var(--font-dm-serif)" }}
               >
                 {s.value}
               </p>
-              <p className="text-xs mt-0.5" style={{ color: "#506458" }}>{s.label}</p>
+              <p className="text-xs md:text-sm mt-0.5" style={{ color: "#506458" }}>{s.label}</p>
             </div>
           ))}
         </motion.div>
@@ -119,8 +119,8 @@ export default function Hero() {
 
       {/* ── RIGHT PANEL — full-height video ── */}
       <motion.div
-        className="relative md:w-1/2 min-h-[45vh] md:min-h-screen overflow-hidden"
-        initial={{ opacity: 0, x: 40 }}
+        className="relative md:w-[62%] min-h-[45vh] md:min-h-screen overflow-hidden -ml-px"
+        initial={{ opacity: 0, x: -40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1, delay: 0.1, ease: "easeOut" }}
       >
@@ -143,10 +143,13 @@ export default function Hero() {
           <source src="/videos/hbcoffee2.mp4" type="video/mp4" />
         </video>
 
-        {/* Subtle left-edge gradient to blend into left panel */}
+        {/* Feathered vignette — bleeds from left panel into video */}
         <div
-          className="absolute inset-y-0 left-0 w-16 z-10"
-          style={{ background: "linear-gradient(to right, #030e07, transparent)" }}
+          className="absolute inset-y-0 left-0 z-10"
+          style={{
+            width: "35%",
+            background: "linear-gradient(to right, #030e07 0%, rgba(3,14,7,0.7) 40%, rgba(3,14,7,0.2) 75%, transparent 100%)",
+          }}
         />
       </motion.div>
     </section>

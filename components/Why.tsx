@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import Icon from "@mdi/react";
-import { mdiCoffee, mdiCup, mdiTrendingUp, mdiHandshake } from "@mdi/js";
+import { mdiCoffee, mdiCup, mdiTrendingUp, mdiHandshake, mdiBullhorn } from "@mdi/js";
 
 const REASONS = [
   {
@@ -36,6 +36,14 @@ const REASONS = [
     name: "End-to-End Support",
     desc: "From setup to grand opening — full training, branding, operational guidance, and ongoing support for your branch.",
     tag: "Included",
+    tagColor: "#d1de47",
+  },
+  {
+    icon: mdiBullhorn,
+    category: "Brand & Marketing",
+    name: "Built-In Brand Power",
+    desc: "Active social media presence, ready-to-deploy marketing materials, and a recognizable brand — so you open with an audience, not from scratch.",
+    tag: "Key Advantage",
     tagColor: "#d1de47",
   },
 ];
@@ -78,9 +86,6 @@ export default function Why() {
   }, [resetAuto]);
 
   const handleNav = (dir: 1 | -1) => { navigate(dir); resetAuto(); };
-
-  // Slots we render: offsets -2 … +2 (5 cards total)
-  const slots = [-2, -1, 0, 1, 2];
 
   return (
     <section id="why" className="py-28" style={{ background: "#030e07" }}>
@@ -139,38 +144,44 @@ export default function Why() {
             style={{ background: "transparent" }}
           />
 
-          {slots.map((offset) => {
-            const idx = mod(current + offset, TOTAL);
-            const item = REASONS[idx];
-            const cfg = SLOT_CONFIG[offset];
+          {REASONS.map((item, i) => {
+            // Compute this card's offset from the current center
+            const raw = mod(i - current, TOTAL);
+            // Fold into -2 … +2 range
+            const offset = raw > TOTAL / 2 ? raw - TOTAL : raw;
+            // Clamp to known slots; cards beyond ±2 are hidden off-screen
+            const cfg = SLOT_CONFIG[offset] ?? {
+              x: offset > 0 ? 520 : -520,
+              opacity: 0,
+              scale: 0.75,
+              zIndex: 0,
+            };
+            const isCenter = offset === 0;
 
             return (
               <motion.div
-                key={`${current}-${offset}`}
+                key={i}
                 className="absolute top-1/2 left-1/2 flex flex-col p-6 cursor-default select-none"
                 style={{
                   width: 280,
-                  marginLeft: -140,   // half of width to center
-                  marginTop: -160,    // half of approx card height to center
+                  marginLeft: -140,
+                  marginTop: -160,
                   borderRadius: 20,
                   background: "#091810",
                   border: "1px solid #142a1c",
                   zIndex: cfg.zIndex,
-                  pointerEvents: offset === 0 ? "auto" : "none",
+                  pointerEvents: isCenter ? "auto" : "none",
                 }}
                 animate={{
                   x: cfg.x,
                   opacity: cfg.opacity,
                   scale: cfg.scale,
-                  borderColor: offset === 0 ? "rgba(0,170,95,0.4)" : "#142a1c",
-                  boxShadow: offset === 0
+                  borderColor: isCenter ? "rgba(0,170,95,0.4)" : "#142a1c",
+                  boxShadow: isCenter
                     ? "0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,170,95,0.15)"
                     : "0 8px 24px rgba(0,0,0,0.4)",
                 }}
-                transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                onClick={() => {
-                  if (offset !== 0) { handleNav(offset > 0 ? 1 : -1); }
-                }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
                 {/* Icon + tag row */}
                 <div className="flex items-start justify-between mb-5">
@@ -219,7 +230,7 @@ export default function Why() {
                     borderRadius: "50px",
                     border: "1px solid rgba(0,170,95,0.25)",
                     fontFamily: "var(--font-dm-sans)",
-                    pointerEvents: offset === 0 ? "auto" : "none",
+                    pointerEvents: isCenter ? "auto" : "none",
                   }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.2)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "rgba(0,170,95,0.1)"; }}

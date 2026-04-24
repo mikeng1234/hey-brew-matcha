@@ -139,6 +139,7 @@ export default function Packages() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
+                whileHover={{ scale: 1.04, transition: { duration: 0.1, ease: "easeOut" } }}
               >
                 {/* Top badge */}
                 {pkg.badge && (
