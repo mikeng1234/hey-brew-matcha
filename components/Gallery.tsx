@@ -25,7 +25,7 @@ export default function Gallery() {
   return (
     <section
       className="py-28"
-      style={{ background: "#030e07", borderTop: "1px solid #142a1c" }}
+      style={{ background: "#1a1512", borderTop: "1px solid #3a2e28" }}
     >
       <div className="max-w-7xl mx-auto px-6">
 
@@ -39,7 +39,7 @@ export default function Gallery() {
         >
           <p
             className="text-xs font-semibold tracking-[0.25em] uppercase mb-4"
-            style={{ color: "#00aa5f", fontFamily: "var(--font-dm-sans)" }}
+            style={{ color: "#a3a83c", fontFamily: "var(--font-dm-sans)" }}
           >
             Event Snapshots
           </p>
@@ -47,14 +47,14 @@ export default function Gallery() {
             className="font-normal leading-tight"
             style={{
               fontSize: "clamp(2rem, 4vw, 3rem)",
-              color: "#f0eae5",
+              color: "#edddd0",
               letterSpacing: "-0.02em",
               fontFamily: "var(--font-dm-serif)",
             }}
           >
             Hey Brew at your event.
             <br />
-            <em style={{ color: "#d1de47", fontStyle: "italic" }}>Every cup, a memory.</em>
+            <em style={{ color: "#d4855a", fontStyle: "italic" }}>Every cup, a memory.</em>
           </h2>
         </motion.div>
 
@@ -64,7 +64,7 @@ export default function Gallery() {
             <motion.div
               key={photo.src}
               className={`relative overflow-hidden group ${photo.span}`}
-              style={{ borderRadius: "16px", background: "#091810" }}
+              style={{ borderRadius: "16px", background: "#261e1b" }}
               initial={{ opacity: 0, scale: 0.97 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -81,10 +81,10 @@ export default function Gallery() {
                 blurDataURL={BLUR}
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "0"; }}
               />
-              {/* Emerald-tinted hover overlay */}
+              {/* Warm-tinted hover overlay */}
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: "rgba(0,40,20,0.35)" }}
+                style={{ background: "rgba(40,20,10,0.35)" }}
               />
             </motion.div>
           ))}

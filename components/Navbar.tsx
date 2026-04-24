@@ -25,8 +25,8 @@ export default function Navbar() {
     <nav
       className="fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md"
       style={{
-        background: scrolled ? "rgba(3,14,7,0.88)" : "transparent",
-        borderBottom: scrolled ? "1px solid #142a1c" : "1px solid transparent",
+        background: scrolled ? "rgba(26,21,18,0.88)" : "transparent",
+        borderBottom: scrolled ? "1px solid #3a2e28" : "1px solid transparent",
         boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,0.5)" : "none",
         backdropFilter: scrolled ? "blur(12px)" : "none",
       }}
@@ -53,15 +53,15 @@ export default function Navbar() {
         {/* Desktop links */}
         <div
           className={`hidden md:flex items-center gap-10 transition-all duration-300 ${scrolled ? "text-sm" : "text-base"}`}
-          style={{ color: "#8a9e8f" }}
+          style={{ color: "#9a8a7a" }}
         >
           {LINKS.map((l) => (
             <a
               key={l.label}
               href={l.href}
-              className="transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f] rounded"
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#f0eae5"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8a9e8f"; }}
+              className="transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a3a83c] rounded"
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#edddd0"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#9a8a7a"; }}
             >
               {l.label}
             </a>
@@ -71,19 +71,19 @@ export default function Navbar() {
         {/* CTA */}
         <motion.a
           href="#inquire"
-          className={`hidden md:inline-flex items-center font-semibold active:scale-[0.95] transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d1de47] ${scrolled ? "px-5 py-2 text-sm" : "px-7 py-3 text-base"}`}
-          style={{ background: "#d1de47", color: "#030e07", borderRadius: "50px" }}
-          whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(209,222,71,0.35)", transition: { duration: 0.2, ease: "easeOut" } }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#b8c83a"; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d1de47"; }}
+          className={`hidden md:inline-flex items-center font-semibold active:scale-[0.95] transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4855a] ${scrolled ? "px-5 py-2 text-sm" : "px-7 py-3 text-base"}`}
+          style={{ background: "#d4855a", color: "#1a1512", borderRadius: "50px" }}
+          whileHover={{ y: -4, boxShadow: "0 8px 24px rgba(212,133,90,0.35)", transition: { duration: 0.2, ease: "easeOut" } }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#c0714a"; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d4855a"; }}
         >
           Franchise Now
         </motion.a>
 
         {/* Hamburger */}
         <button
-          className="md:hidden p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f] rounded"
-          style={{ color: "#f0eae5" }}
+          className="md:hidden p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a3a83c] rounded"
+          style={{ color: "#edddd0" }}
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
           aria-expanded={open}
@@ -108,28 +108,28 @@ export default function Navbar() {
           id="mobile-nav"
           aria-label="Mobile navigation"
           className="md:hidden relative z-50 px-8 py-6 space-y-5"
-          style={{ background: "rgba(3,14,7,0.98)", borderTop: "1px solid #142a1c" }}
+          style={{ background: "rgba(26,21,18,0.98)", borderTop: "1px solid #3a2e28" }}
         >
           {LINKS.map((l) => (
             <a
               key={l.label}
               href={l.href}
-              className="block text-base transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f] rounded"
-              style={{ color: "#8a9e8f" }}
+              className="block text-base transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a3a83c] rounded"
+              style={{ color: "#9a8a7a" }}
               onClick={() => setOpen(false)}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#f0eae5"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#8a9e8f"; }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#edddd0"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.color = "#9a8a7a"; }}
             >
               {l.label}
             </a>
           ))}
           <a
             href="#inquire"
-            className="inline-flex px-6 py-2.5 text-base font-semibold active:scale-[0.95] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d1de47]"
-            style={{ background: "#d1de47", color: "#030e07", borderRadius: "50px" }}
+            className="inline-flex px-6 py-2.5 text-base font-semibold active:scale-[0.95] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4855a]"
+            style={{ background: "#d4855a", color: "#1a1512", borderRadius: "50px" }}
             onClick={() => setOpen(false)}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#b8c83a"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d1de47"; }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#c0714a"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d4855a"; }}
           >
             Franchise Now
           </a>

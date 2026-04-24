@@ -12,12 +12,12 @@ export default function Hero() {
       {/* ── LEFT PANEL — solid background, text pinned to bottom-left ── */}
       <div
         className="relative z-10 flex flex-col justify-end px-10 pb-14 pt-32 md:pt-0 md:w-[38%] min-h-[55vh] md:min-h-screen"
-        style={{ background: "#030e07" }}
+        style={{ background: "#1a1512" }}
       >
         {/* Eyebrow */}
         <motion.p
           className="text-xs md:text-sm font-semibold tracking-[0.25em] uppercase mb-5"
-          style={{ color: "#00aa5f", fontFamily: "var(--font-dm-sans)" }}
+          style={{ color: "#a3a83c", fontFamily: "var(--font-dm-sans)" }}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.15 }}
@@ -30,7 +30,7 @@ export default function Hero() {
           className="font-normal leading-none mb-6"
           style={{
             fontSize: "clamp(2.6rem, 5.5vw, 5.8rem)",
-            color: "#f0eae5",
+            color: "#edddd0",
             letterSpacing: "-0.02em",
             fontFamily: "var(--font-dm-serif)",
           }}
@@ -39,13 +39,13 @@ export default function Hero() {
           transition={{ duration: 0.85, delay: 0.25 }}
         >
           Hey Brew{" "}
-          <em style={{ color: "#d1de47", fontStyle: "italic" }}>Cafe PH.</em>
+          <em style={{ color: "#d4855a", fontStyle: "italic" }}>Cafe PH.</em>
         </motion.h1>
 
         {/* Body copy */}
         <motion.p
           className="text-sm md:text-base leading-relaxed mb-8 max-w-sm md:max-w-md"
-          style={{ color: "#8a9e8f" }}
+          style={{ color: "#9a8a7a" }}
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.38 }}
@@ -63,28 +63,28 @@ export default function Hero() {
         >
           <motion.a
             href="#inquire"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d1de47]"
-            style={{ background: "#d1de47", color: "#030e07", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
-            whileHover={{ y: -3, boxShadow: "0 8px 28px rgba(209,222,71,0.4)", transition: { duration: 0.2 } }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#b8c83a"; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d1de47"; }}
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4855a]"
+            style={{ background: "#d4855a", color: "#1a1512", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
+            whileHover={{ y: -3, boxShadow: "0 8px 28px rgba(212,133,90,0.4)", transition: { duration: 0.2 } }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#c0714a"; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#d4855a"; }}
           >
             Franchising →
           </motion.a>
           <motion.a
             href="#packages"
-            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00aa5f]"
-            style={{ border: "1px solid #1e3d28", color: "#8a9e8f", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
+            className="inline-flex items-center justify-center gap-2 px-7 py-3 md:px-9 md:py-4 text-sm md:text-base font-semibold active:scale-[0.95] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#a3a83c]"
+            style={{ border: "1px solid #4a3a32", color: "#9a8a7a", borderRadius: "50px", fontFamily: "var(--font-dm-sans)" }}
             whileHover={{ y: -3, transition: { duration: 0.2 } }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.borderColor = "#00aa5f";
-              el.style.color = "#00aa5f";
+              el.style.borderColor = "#a3a83c";
+              el.style.color = "#a3a83c";
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.borderColor = "#1e3d28";
-              el.style.color = "#8a9e8f";
+              el.style.borderColor = "#4a3a32";
+              el.style.color = "#9a8a7a";
             }}
           >
             View Packages
@@ -94,7 +94,7 @@ export default function Hero() {
         {/* Stats row */}
         <motion.div
           className="flex flex-wrap gap-8 mt-12 pt-8"
-          style={{ borderTop: "1px solid #142a1c" }}
+          style={{ borderTop: "1px solid #3a2e28" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.7 }}
@@ -107,11 +107,11 @@ export default function Hero() {
             <div key={s.label}>
               <p
                 className="text-2xl md:text-4xl font-normal"
-                style={{ color: "#d1de47", fontFamily: "var(--font-dm-serif)" }}
+                style={{ color: "#d4855a", fontFamily: "var(--font-dm-serif)" }}
               >
                 {s.value}
               </p>
-              <p className="text-xs md:text-sm mt-0.5" style={{ color: "#506458" }}>{s.label}</p>
+              <p className="text-xs md:text-sm mt-0.5" style={{ color: "#7a6a5e" }}>{s.label}</p>
             </div>
           ))}
         </motion.div>
@@ -136,7 +136,7 @@ export default function Hero() {
             const el = e.currentTarget as HTMLVideoElement;
             el.style.display = "none";
             if (el.parentElement) {
-              el.parentElement.style.background = "#0f2418";
+              el.parentElement.style.background = "#2e2420";
             }
           }}
         >
@@ -148,7 +148,7 @@ export default function Hero() {
           className="absolute inset-y-0 left-0 z-10"
           style={{
             width: "35%",
-            background: "linear-gradient(to right, #030e07 0%, rgba(3,14,7,0.7) 40%, rgba(3,14,7,0.2) 75%, transparent 100%)",
+            background: "linear-gradient(to right, #1a1512 0%, rgba(26,21,18,0.7) 40%, rgba(26,21,18,0.2) 75%, transparent 100%)",
           }}
         />
       </motion.div>

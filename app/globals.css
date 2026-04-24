@@ -1,27 +1,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface:        #030e07;
-  --color-surface-alt:    #091810;
-  --color-surface-card:   #0f2418;
-  --color-surface-raised: #152e1e;
-  --color-emerald:        #00aa5f;
-  --color-emerald-dim:    #008a4c;
-  --color-lime:           #d1de47;
-  --color-lime-dim:       #b8c83a;
-  --color-green-mid:      #78bc4a;
-  --color-text-primary:   #f0eae5;
-  --color-text-secondary: #8a9e8f;
-  --color-text-muted:     #506458;
-  --color-border:         #142a1c;
-  --color-border-raised:  #1e3d28;
+  --color-surface:        #1a1512;
+  --color-surface-alt:    #261e1b;
+  --color-surface-card:   #2e2420;
+  --color-surface-raised: #3a2e2a;
+  --color-emerald:        #a3a83c;
+  --color-emerald-dim:    #868b2e;
+  --color-lime:           #d4855a;
+  --color-lime-dim:       #c0714a;
+  --color-green-mid:      #c2b870;
+  --color-text-primary:   #edddd0;
+  --color-text-secondary: #9a8a7a;
+  --color-text-muted:     #7a6a5e;
+  --color-border:         #3a2e28;
+  --color-border-raised:  #4a3a32;
   --font-serif:           var(--font-dm-serif);
   --font-sans:            var(--font-dm-sans);
 }
 
 html, body {
-  background-color: #030e07;
-  color: #f0eae5;
+  background-color: #1a1512;
+  color: #edddd0;
   font-family: var(--font-sans), 'DM Sans', Arial, sans-serif;
   font-size: 14px;
   font-weight: 400;
@@ -31,6 +31,6 @@ html, body {
 }
 
 ::-webkit-scrollbar        { width: 4px; }
-::-webkit-scrollbar-track  { background: #091810; }
-::-webkit-scrollbar-thumb  { background: #1e3d28; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #00aa5f; }
+::-webkit-scrollbar-track  { background: #261e1b; }
+::-webkit-scrollbar-thumb  { background: #4a3a32; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #a3a83c; }
