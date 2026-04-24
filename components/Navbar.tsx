@@ -25,9 +25,10 @@ export default function Navbar() {
     <nav
       className="fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-md"
       style={{
-        background: scrolled ? "rgba(3,14,7,0.92)" : "rgba(3,14,7,0.4)",
+        background: scrolled ? "rgba(3,14,7,0.88)" : "transparent",
         borderBottom: scrolled ? "1px solid #142a1c" : "1px solid transparent",
         boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,0.5)" : "none",
+        backdropFilter: scrolled ? "blur(12px)" : "none",
       }}
     >
       <div className={`max-w-7xl mx-auto px-8 flex items-center justify-between transition-all duration-300 ${scrolled ? "py-3" : "py-6"}`}>
